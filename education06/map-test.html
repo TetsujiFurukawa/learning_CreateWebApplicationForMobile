@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width" ,user-scalable="no">
+<style>
+  #map {
+    width: 600px;
+    height: 600px;
+  }
+</style>
+
+<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDrG1qGjxNAzez93k4YRVcuzS8w9ASjUBM"></script>
+
+<div id="map"></div>
+<script type="text/javascript">
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    var lat = pos.coords.latitude;
+    var lng = pos.coords.longitude;
+
+    var mypos = new google.maps.LatLng(lat, lng);
+    var option = {
+      zoom: 16,
+      center: mypos,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    //var gmap = new google.maps.Map($("map"), option);
+
+    var map = new google.maps.Map($("map"), option);
+    //   var map = new google.maps.Map($("map"), {
+    //   center: new google.maps.LatLng(35.7100, 139.8107),
+    //   zoom: 11,
+    // });
+
+    var gmarker = new google.maps.Marker({
+      position: mypos,
+      map: map
+    });
+  });
+
+
+  // var mapDiv = document.getElementById("map");
+  var map = new google.maps.Map($('map'), {
+    center: new google.maps.LatLng(35.7100, 139.8107),
+    zoom: 11,
+  });
+  function $(id) { return document.getElementById(id); }
+
+</script>

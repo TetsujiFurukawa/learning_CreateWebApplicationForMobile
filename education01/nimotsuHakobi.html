@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=320" ,user-scalable=no>
+  <title>荷物運びパズル</title>
+  <script type="text/javascript" src="./js/stage-data.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+</head>
+
+<body>
+  <canvas id="aCanvas" width="320" height="320"></canvas>
+  <p>
+    <button onclick="restart()">リセット</button>
+  </p>
+  <script type="text/javascript">
+    var blockW = 20;
+    var padX = 10, padY = 10;
+    var stageCols = 15;
+    var stageRoews = 15;
+
+    var imgURL = "./img/"
+    var imageURLs = [imgURL + "0-tile.png", imgURL + "1-block.png", imgURL + "2-man.png",
+    imgURL + "3-box.png", imgURL + "4-goal.png", imgURL + "5-ok.png"]
+    // 変数の略称
+    var nTile = 0, nBlock = 1, nPlayer = 2, nBox = 3, nGoal = 4, nOK = 5;
+
+    var images = [];             // Imageオブジェクトの配列
+    var context;                 // 描画用コンテキスト
+    var backImage = new Image(); // 背景Imageオブジェクト
+    var loadedCount = 0;         // 読み込んだ画像の数を管理
+    var stage = [];              // ステージデータの配列
+    var playerX, playerY, boxCount;// プレイヤーの位置など
+
+    window.onload = function () {
+      var canvas = $("aCanvas");
+      context = canvas.getContext("2d");
+
+      canvas.ontouchstart = function (ev) {
+        ev.preventDefault();
+        var t = ev.touches[0];
+        touchXY(t.pageX, t.pageY);
+      };
+
+      canvas.onmousedown = function (ev) {
+        ev.preventDefault();
+        touchXY(ev.pageX, ev.pageY);
+      };
+      // 背景の読込み
+      backImage.onload = checkImage;
+      backImage.src = imgURL + "back.png";
+      // チップ画像の読込み
+      for (var i = 0; i <= 5; i++) {
+        images[i] = new Image();
+        images[i].onload = checkImage;
+        images[i].src = imageURLs[i];
+      }
+    };
+
+    function checkImage() {
+      loadedCount++;
+      if (loadedCount == 7) initGame();
+    }
+
+    function initGame() {
+      for (var i = 0; i < stageMaps.length; i++) {
+        stage[i] = stageMaps[i];
+      }
+      playerX = stageInfo["playerX"];
+      playerY = stageInfo["playerY"];
+      boxCount = stageInfo["boxCount"];
+      // もし前回の続きがあればロードする
+      loadData();
+      drawCanvas();
+    }
+
+    function drawCanvas() {
+      // 背景の描画
+      context.drawImage(backImage, 0, 0);
+      for (var y = 0; y < stageRoews; y++) {
+        for (var x = 0; x < stageCols; x++) {
+          var tip = stage[getI(x, y)];
+          var img = images[tip];
+          context.drawImage(img, padX + x * blockW,
+            padY + y * blockW);
+        }
+      }
+      context.drawImage(images[2], padX + playerX * blockW,
+        padY + playerY * blockW);
+    }
+
+    // 画面タッチしたとき
+    function touchXY(x, y) {
+      x -= padX; y -= padY; // 余白分を減らす
+      var cx = Math.floor(x / blockW);
+      var cy = Math.floor(y / blockW);
+      var px = playerX;
+      var py = playerY;
+
+      var tx, ty;
+      if (Math.abs(px - cx) > Math.abs(py - cy)) {
+        ty = 0;
+        tx = (px > cx) ? -1 : 1;
+        px += tx;
+      } else {
+        tx = 0;
+        ty = (py > cy) ? -1 : 1;
+        py += ty;
+      }
+      // 移動可能かチェック
+      var tip = stage[getI(px, py)];
+      switch (tip) {
+        case nTile:
+        case nGoal:
+          playerX = px;
+          playerY = py;
+          break;
+        case nBox:
+          var bx = px + tx;
+          var by = py + ty;
+          var btip = stage[getI(bx, by)];
+          if (btip == nBlock) return;
+          if (btip == nTile) {
+            stage[getI(bx, by)] = nBox;
+            stage[getI(px, py)] = nTile;
+          } else if (btip == nGoal) {
+            stage[getI(bx, by)] = nOK;
+            stage[getI(px, py)] = nTile;
+            boxCount--;
+            if (boxCount <= 0) {
+              setTimeout(function () {
+                alert("ゲームクリア");
+                restart();
+              }, 300);
+            }
+          }
+          playerX = px;
+          playerY = py;
+          break;
+      }
+      saveData();   // データの保存
+      drawCanvas(); // 画面描画
+    }
+    function saveData() {
+      localStorage.stage = JSON.stringify(stage);
+      localStorage.playerX = playerX;
+      localStorage.playerY = playerY;
+      localStorage.boxCount = boxCount;
+    }
+    function loadData() {
+      if (localStorage.stage == undefined) return;
+      stage = JSON.parse(localStorage.stage);
+      playerX = parseInt(localStorage.playerX);
+      playerY = parseInt(localStorage.playerY);
+      boxCount = parseInt(localStorage.boxCount);
+    }
+    function restart() {
+      delete localStorage.stage;
+      initGame();
+    }
+    function getI(x, y) { return y * stageCols + x; }
+    function $(id) { return document.getElementById(id); }
+  </script>
+</body>
+
+</html>

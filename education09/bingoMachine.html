@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=320",user-scalable=no>
+    <title>ビンゴマシン</title>
+  </head>
+  <body>
+    <h1>ビンゴマシン</h1>
+    <div id="number" style="font-size:70px;">*</div>
+    <div id="info" style="font-size:12px;"></div>
+    <p><button onclick="nextNumber()">番号を表示</button>
+    <p><button onclick="resetNumber()">リセット</button>  
+
+    <script type="text/javascript">
+    function nextNumber() {
+      if(localStorage.bingo == undefined ){
+        makeNumber();
+      }
+
+      var bingo_json = localStorage.bingo;
+      var a = JSON.parse(bingo_json);
+      var no = a.shift();
+
+      document.getElementById("number").innerHTML = no;
+      document.getElementById("info").innerHTML = "残りの個数：" + a.length;
+
+      localStorage.bingo = JSON.stringify(a);
+
+      if(a.length == 0){
+        delete localStorage.bingo;
+      }
+    }
+
+    function resetNumber(){
+      if(!confirm("リセットしますか？")) return;
+      makeNumber();
+    }
+
+    function makeNumber(){
+     var a = [];
+      for(var i = 1; i <= 75; i++){
+        a.push(i);
+      }
+      
+      for(var i = 0; i < a.length; i++){
+        var tmp = a[i];
+        var r = Math.floor(Math.random() * a.length);
+        a[i] = a[r];
+        a[r] = tmp;
+      }
+      localStorage.bingo = JSON.stringify(a);
+      alert("番号をリセットしました！");
+    }
+  </script>
+  </body>
+</html>

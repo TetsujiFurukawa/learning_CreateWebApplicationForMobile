@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html manifest="test.appcache">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js">
+  </script>
+  <script type="text/javascript">
+    var atari;
+    jQuery(function () { playGame(); });
+    //ゲーム開始
+    function playGame() {
+      atari = Math.floor(Math.random() * 3);
+      console.log("atari:" + atari);
+      showPage('#question');
+    }
+    function showPage(id) {
+      $("[data-role='page']").hide();
+      $(id).show();
+    }
+    function openBox(no) {
+      if (no == atari) {
+        showPage("#atari");
+      } else {
+        showPage("#hazure");
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="question" data-role="page">
+    <h3>財宝の入った宝箱はどれでしょう？</h3>
+    <img src="img/s-box-close.gif" onclick="openBox(0)">
+    <img src="img/s-box-close.gif" onclick="openBox(1)">
+    <img src="img/s-box-close.gif" onclick="openBox(2)">
+  </div>
+  <div id="atari" data-role="page">
+    <h3>あたり！</h3>
+    <img src="img/box-open-zaihou.gif">
+    <br/>
+    <button onclick="playGame();">もう1回</button>
+  </div>
+  <div id="hazure" data-role="page">
+    <h3>はずれ！</h3>
+    <img src="img/box-open.gif">
+    <br/>
+    <button onclick="playGame();">もう1回</button>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<style>
+  div {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+<script type="text/javascript">
+  var x = 160, y = 120, col = 0xFF0000;
+
+  window.addEventListener("deviceorientation", f_devori);
+  function f_devori(e) {
+    var content = $("aCanvas").getContext('2d');
+    x = (x + e.gamma / 2) % 320;
+    y = (y + e.beta / 3) % 250;
+    col = (col + 10) % 0xFFFFFF;
+    console.log("x:" + x);
+    console.log("y:" + y);
+    console.log("col:" + col);
+    var r = 10;
+    content.beginPath();
+    content.fillStyle = "#" + col.toString(16);
+    console.log("fillStyle:" + content.fillStyle);
+    content.arc(x, y, r, 0, 2 * Math.PI);
+    content.fill();
+    // $("info").innerHTML =
+    //   "alpha:" + e.alpha + "<br/>" +
+    //   "gamma:" + e.gamma + "<br/>" +
+    //   "beta:" + e.beta + "<br/>" +
+    //   "content.fillStyle" + content.fillStyle;
+
+  };
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+</script>
+<html>
+
+<head>
+</head>
+
+<body>
+  <div id="info"></div>
+  <canvas id="aCanvas" width="320" height="250"></canvas>
+</body>
+
+</html>
