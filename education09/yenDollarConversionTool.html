@@ -1,12 +1,14 @@
 <!DOCTIPE html>
-<html><head>
+<html>
+
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" 
-        content="width=device-width, initial-scale=1, user-scalable=yes">
-    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <script src="../lib/jquery-3.3.1.min.js"></script>
     <title>HTML5テンプレート</title>
 
-</head></body>
+</head>
+</body>
 <h1>円ドル変換ツール</h1>
 <p>ドル：
     <input id="usd" type="text" value="1">
@@ -15,25 +17,27 @@
 </p>
 
 <script type="text/javascript">
-    var rates=[];
+    var rates = [];
     $("#btn").hide();
     //API
-    var api="http://api.aoikujira.com/kawase/get.php" + 
-            "?format=jsonp2&code=usd&callback=?";
-$.getJSON(api,function(e){
-    rates=e;
-    $("#btn").show();
-});
-// レート計算
-$("#btn").click(function(){
-    var rate = parseFloat(rates["JPY"]);
-    var ans = rate * $("#usd").val();
-    $("#jpy").html(ans + "円です。")
-    .hide()
-    .css("background-color","#ffc0c0")
-    .css("font-size","32px")
-    .fadeIn("slow");
-});
+    var api = "http://api.aoikujira.com/kawase/get.php" +
+        "?format=jsonp2&code=usd&callback=?";
+    $.getJSON(api, function (e) {
+        rates = e;
+        $("#btn").show();
+    });
+    // レート計算
+    $("#btn").click(function () {
+        var rate = parseFloat(rates["JPY"]);
+        var ans = rate * $("#usd").val();
+        $("#jpy").html(ans + "円です。")
+            .hide()
+            .css("background-color", "#ffc0c0")
+            .css("font-size", "32px")
+            .fadeIn("slow");
+    });
 </script>
 
-</body></html>
+</body>
+
+</html>
