@@ -1,2 +1,2 @@
 # learning_CreateWebApplicationForMobile
-This is Learning to create web application for mobile
+「スマホ向けWebアプリケーション制作ガイドブック」の学習内容
